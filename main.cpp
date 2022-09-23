@@ -3,26 +3,30 @@
 #include <math.h>
 using namespace std;
 
-double series_sum_frw(double Q)
+double series_sum_frw(double Q, int& n)
 {
+        n = 0;
 	double s = 0;
 	double q = 1;
 	while ((s + q > s)||(s+q<s))
 	{
 		s = s + q;
 		q = q * Q;
+                n++;
 	}
 	return s;
 }
-double series_sum_back(double Q)
+double series_sum_back(double Q, int n)
 {
-	Q = 1 / Q;
+	//Q = 1 / Q;
 	double s = 0;
-	double q = 1e-6;
-	while (q <= 1)
+    double q = pow(Q,n);
+    int N=0;
+    while (N<n+1)
 	{
+        N++;
 		s = s + q;
-		q = q * Q;
+		q = q / Q;
 	}
 	return s;
 }
@@ -52,13 +56,15 @@ int main()
 	// посчитать ряд 
 	cout << "Считаем прогрессию" << '\n';
 	cout << "Прямо" << '\n';
-	cout << "q = 2    " << series_sum_frw(0.5) << '\n';
-	cout << "q = 3    " << series_sum_frw(0.33) << '\n';
-	cout << "q = 1/0.99    " << series_sum_frw(0.99) << '\n';
-	cout << "Обратно" << '\n';
-	cout <<	"q = 2    " << series_sum_back(0.5) << '\n';
-	cout << "q = 3    " << series_sum_back(0.3333) << '\n';
-	cout << "q = 1/0.99    " << series_sum_back(0.99) << '\n';
+        int M =0;
+        cout << "q = 2    " << series_sum_frw(0.5,M) << '\n';
+        cout <<	"q = 2    " << series_sum_back(0.5,M) << '\n';
+
+        cout << "q = 3    " << series_sum_frw(0.33,M) << '\n';
+        cout << "q = 3    " << series_sum_back(0.3333,M) << '\n';
+
+        cout << "q = 1/0.99    " << series_sum_frw(0.99,M) << '\n';
+        cout << "q = 1/0.99    " << series_sum_back(0.99,M) << '\n';
 
 	// Считаем экспоненту через ряд
 	cout <<  '\n' << "Считаем экспоненту" << '\n';
@@ -73,5 +79,10 @@ int main()
 		cout << "h = " << h;
 		cout << "  err = " << abs((tail_series(2 + h, 20) - tail_series(2, 20)) / h - tail_series(2, 20)) << '\n';
 	}
+        for (double h = 0.1; h > 1e-15; h = h / 10)
+        {
+                cout << "h = " << h;
+                cout << "  err = " << abs((exp(2 + h) - exp (2)) / h -exp(2)) << '\n';
+        }
 }
 
